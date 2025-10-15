@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Loudwater Weather</title>
+<link rel="icon" type="image/x-icon" href="./images/fav.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  /* Adjustable variable for question boxes */
+  :root {
+    --question-box-padding: 1rem; /* Change this to make question boxes taller or shallower */
+  }
+
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: #1c4587;
+    color: #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+    background: #162f5c;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  nav a:hover {
+    text-decoration: underline;
+  }
+  .page {
+    display: none;
+    padding: 2rem;
+    flex: 1;
+  }
+  .page.active { display: block; }
+  .header {
+    width: 100%;
+    height: 200px;
+    background-image: url('https://i.postimg.cc/nzjkmZ3v/IMG-2479-1.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 3em;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px black;
+    border-radius: 1rem;
+    margin-bottom: 1.2rem;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .box { 
+    background: #1b2333; 
+    border: 1px solid rgba(255,255,255,0.08); 
+    backdrop-filter: blur(6px); 
+    border-radius: 1rem; 
+    padding: 1rem; 
+    margin-bottom: 1rem; 
+    max-width: 800px; 
+    margin-left: auto; 
+    margin-right: auto; 
+    text-align: center; 
+  }
+  .box.questions-box { padding: var(--question-box-padding); }
+  .spaced { margin-top: 3.5rem; }
+  .title-box { font-size: 1.25rem; font-weight: bold; }
+  iframe { width: 100%; height: 213px; border: none; border-radius: 0.75rem; display: block; }
+  .hours-box, .weather-card { background: #1b2333; border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; padding: 1rem; max-width: 800px; margin: 0.5rem auto 1rem auto; text-align: center; color: #22d3ee; }
+  .hours-box ul { list-style: none; padding: 0; margin: 0.25rem 0 0; }
+  .hours-box li { margin: 0.3rem 0; }
+  .status-card, .time-card { background: #1b2333; border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; display: flex; justify-content: center; align-items: center; text-align: center; margin: 1rem auto; }
+  .status-card { width: 498px; height: 80px; font-size: 1.25rem; }
+  .time-card { width: 450px; height: 420px; flex-direction: column; padding: 1.5rem; overflow: hidden; text-align: center; }
+  .emoji { font-size: 4rem; }
+  .time { font-size: 2.5rem; margin: 0.75rem 0 0.25rem; }
+  .date { font-size: 1.25rem; color: #94a3b8; margin: 0.25rem 0; }
+  .label { font-size: 1.1rem; color: #94a3b8; margin-top: 0.5rem; text-align: center; }
+  .chip { display: inline-block; margin-top: 0.75rem; padding: 0.4rem 0.75rem; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; font-size: 0.9rem; color: #22d3ee; }
+  .status-on { color: limegreen; }
+  .status-off { color: red; }
+  .wrap { display: inline-block; padding: 0; margin-bottom: 1rem; text-align: center; }
+  .card { min-width: 260px; background: #1b2333; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.08); padding: 1.5rem 2rem; text-align: center; margin: 0 auto; }
+  .card h2 { margin: 0 0 0.5rem; font-size: 1.25rem; color: #22d3ee; }
+  .value, .temperature { font-size: 2rem; font-weight: bold; margin: 0.5rem 0; }
+  .note { margin-top: 0.5rem; font-size: 0.8rem; color: #94a3b8; }
+  .last-updated { margin-top: 0.25rem; font-size: 0.75rem; color: #94a3b8; }
+  footer { background: #162f5c; color: white; text-align: center; padding: 1rem; margin-top: auto; }
+  footer .title { font-size: 1.5rem; font-weight: bold; }
+  footer .copyright { font-size: 0.85rem; }
+
+/* ---------- MOBILE ADJUSTMENTS ---------- */
+@media only screen and (max-width: 480px) {
+
+  /* Adjustable spacing variable */
+  :root {
+    --mobile-extra-spacing: 0.5rem; /* change to increase spacing between cards */
+  }
+
+  /* Nav adjustments */
+  nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  nav a {
+    font-size: 1rem;
+  }
+
+  /* Header smaller */
+  .header {
+    font-size: 2em;
+    height: 150px;
+    text-align: center;
+  }
+
+  /* Status and time/date cards */
+  .status-card, .time-card {
+    width: 85% !important;
+    margin: 0.5rem auto !important;
+    float: none !important;
+  }
+
+  /* Flex container holding the wrap cards (temperature/humidity) */
+  #weather > div[style*="display: flex"] {
+    justify-content: center !important; /* center horizontally */
+    flex-wrap: wrap !important;         /* allow wrapping */
+    align-items: flex-start !important; /* top align cards */
+    gap: var(--mobile-extra-spacing) !important; /* horizontal spacing */
+  }
+
+  /* Individual wrap cards (temperature, humidity, etc.) */
+  .wrap {
+    width: 80% !important;       /* smaller than container so not flush right */
+    max-width: 280px !important; /* prevents too wide on larger small screens */
+    margin: 0.5rem auto !important; /* horizontally center each card */
+    float: none !important;
+  }
+
+  /* Questions page boxes centered */
+  #questions .box {
+    width: 85% !important;
+    margin: 0.5rem auto;
+    text-align: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  /* Hours box adjustments */
+  .hours-box {
+    width: 85%;
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+
+  /* Weather-card and generic box adjustments */
+  .weather-card, .box {
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0.75rem;
+  }
+
+  /* Questions-box height adjustment */
+  .questions-box {
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1.5rem;
+  }
+
+  /* ✅ Added fix: prevent horizontal overflow and keep cards fully on screen */
+  body, html {
+    overflow-x: hidden;
+  }
+
+  .card {
+    width: 100% !important;
+    max-width: 260px !important;
+    box-sizing: border-box;
+  }
+}
+
+</style>
+</head>
+<body>
+<nav>
+  <a href="#" onclick="showPage('home')">Home</a>
+  <a href="#" onclick="showPage('weather')">Weather</a>
+  <a href="#" onclick="showPage('questions')">Questions</a>
+  <a href="#" onclick="showPage('hardware')">Hardware</a>
+</nav>
+
+<!-- Home Page -->
+<div id="home" class="page active">
+  <div class="header">Loudwater Weather</div>
+  <div class="box">
+    Welcome to Loudwater Weather, the local weather station for Loudwater. This website is still in production and may change occasionally.
+    <br><br>
+    The weather station uses a Raspberry Pi Pico 2 WH and an AM2320 sensor to measure temperature and humidity. Time and date are handled by JavaScript.
+  </div>
+  <div class="box title-box spaced">Where is Loudwater?</div>
+  <div class="box">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m13!1m8!1m3!1d9911.042172303598!2d-0.694453!3d51.609276!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNTHCsDM2JzI4LjEiTiAwwrA0MSczOS4wIlc!5e0!3m2!1sen!2suk!4v1755671930777!5m2!1sen!2suk" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+<div class="box">
+    Loudwater is a small village just outside High Wycombe in Buckinghamshire. The pin is on the local Loudwater Premier Inn. Loudwater has the lovely River Wye chalkstream located in it and is mostly known for papermills which used to operate along that river.
+  </div>
+  <div class="box title-box spaced">Operating Hours</div>
+  <div class="hours-box">
+    <ul>
+      <li>Monday - 07:30 --- 21:00</li>
+      <li>Tuesday - 07:30 --- 21:00</li>
+      <li>Wednesday - 07:30 --- 21:00</li>
+      <li>Thursday - 07:30 --- 21:00</li>
+      <li>Friday - 07:30 --- 21:00</li>
+      <li>Saturday - 07:30 --- 21:00</li>
+      <li>Sunday - Off</li>
+    </ul>
+  </div>
+</div>
+<!-- Weather Page -->
+<div id="weather" class="page">
+  <div class="header">Weather</div>
+  <div class="weather-card" style="color:#ffffff;">
+    This page displays live weather data including temperature, humidity, and time. If the station is off, temperature amd humidity values show the last known readings.
+  </div>
+  <div class="status-card">
+    <span id="status">Checking status…</span>
+  </div>
+  <div class="time-card">
+    <div class="emoji" id="emoji">🕛</div>
+    <div class="time" id="clock">--:--:--</div>
+    <div class="date" id="date">Loading date…</div>
+    <div class="label" id="label">—</div>
+    <div class="chip" id="tz">Loading time zone…</div>
+  </div>
+  <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin: 1rem auto;">
+    <div class="wrap">
+      <main class="card">
+        <h2>Temperature °C</h2>
+        <div class="temperature" id="temperatureC">-- °C</div>
+        <div class="note">Data from Loudwater Weather Station</div>
+        <div class="last-updated" id="lastUpdatedC">--</div>
+      </main>
+    </div>
+    <div class="wrap">
+      <main class="card">
+        <h2>Temperature °F</h2>
+        <div class="temperature" id="temperatureF">-- °F</div>
+        <div class="note">Data from Loudwater Weather Station</div>
+        <div class="last-updated" id="lastUpdatedF">--</div>
+      </main>
+    </div>
+    <div class="wrap">
+      <main class="card">
+        <h2>Humidity %</h2>
+        <div class="value" id="humidity">-- %</div>
+        <div class="note">Data from Loudwater Weather Station</div>
+        <div class="last-updated" id="lastUpdatedH">--</div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- Questions Page -->
+<div id="questions" class="page">
+  <div class="header">Questions Form</div>
+  <div class="box questions-box">
+    Please fill in this form if you have any questions about Loudwater Weather.
+  </div>
+  <div class="box questions-box">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSetHHAyKsuwd4yDAn-Nl09UHog9usPD-SchLTci-hewjPGS1A/viewform" style="color:#22d3ee; text-decoration:underline;">Questions Form</a>
+  </div>
+</div>
+
+<!-- Hardware Page -->
+<div id="hardware" class="page">
+  <div class="header">Hardware</div>
+  <div class="box">The weather station uses a Raspberry Pi Pico 2 WH and an AM2320 to get temperature and humidity. It also has 2 4.7K resistors and a few jumper wires as well as 2 breadboards. Here's some pictures of the main parts of the weather station.</div>
+  <div class="box">
+    <img src="https://i.postimg.cc/Zn3JL7Zz/IMG-2965.jpg" alt="Raspberry Pi Pico 2 WH" style="max-width:100%; border-radius:1rem;">
+    <div style="margin-top:0.5rem; font-weight:bold;">Raspberry Pi Pico 2 WH</div>
+  </div>
+  <div class="box">
+    <img src="https://i.postimg.cc/MGKRrRvp/IMG-2969.jpg" alt="AM2320 Sensor" style="max-width:100%; border-radius:1rem;">
+    <div style="margin-top:0.5rem; font-weight:bold;">AM2320 Sensor</div>
+  </div>
+  <div class="box">
+    <img src="https://i.postimg.cc/rpbgLQ6S/IMG-2980.jpg" alt="Finished Circuit" style="max-width:100%; border-radius:1rem;">
+    <div style="margin-top:0.5rem; font-weight:bold;">Finished Circuit</div>
+  </div>
+</div>
+
+<footer>
+  <div class="title">Loudwater Weather 2025</div>
+  <div class="copyright">© Copyright 2025</div>
+</footer>
+
+<script>
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+}
+
+async function updateStatus() {
+  try {
+    const res = await fetch('https://api.thingspeak.com/channels/3039615/fields/1.json?results=1');
+    const data = await res.json();
+    const lastUpdate = new Date(data.feeds[0].created_at);
+    const diffSeconds = (new Date() - lastUpdate)/1000;
+    const statusEl = document.getElementById('status');
+    if (diffSeconds < 60) {
+      statusEl.textContent = 'Weather station is: ON';
+      statusEl.className = 'status-on';
+    } else {
+      statusEl.textContent = 'Weather station is: OFF';
+      statusEl.className = 'status-off';
+    }
+  } catch(err){
+    console.error(err);
+  }
+}
+
+updateStatus();
+setInterval(updateStatus,10000);
+
+const LOUDWATER_TZ = "Europe/London";
+
+function getPartOfDay(d) {
+  const h=d.getHours(), m=d.getMinutes();
+  if(h===12 && m===0) return {name:"noon", emoji:"🕛"};
+  if(h===0 && m===0) return {name:"midnight", emoji:"🌙"};
+  if(h>=5 && h<12) return {name:"morning", emoji:"☀️"};
+  if(h>=12 && h<18) return {name:"afternoon", emoji:"🌤️"};
+  if(h>=18 && h<22) return {name:"evening", emoji:"🌆"};
+  return {name:"night", emoji:"🌙"};
+}
+
+function formatTime(d){
+  return d.toLocaleTimeString("en-GB",{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:LOUDWATER_TZ});
+}
+
+function formatDate(d){
+  return d.toLocaleDateString("en-GB",{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:LOUDWATER_TZ});
+}
+
+function getDateInLoudwater(){
+  return new Date(new Date().toLocaleString("en-US",{timeZone:LOUDWATER_TZ}));
+}
+
+function updateClock(){
+  const now=getDateInLoudwater();
+  const {name,emoji}=getPartOfDay(now);
+  document.getElementById('clock').textContent=formatTime(now);
+  document.getElementById('date').textContent=formatDate(now);
+  document.getElementById('label').textContent=`It is currently ${name} in Loudwater.`;
+  document.getElementById('emoji').textContent=emoji;
+  document.getElementById('tz').textContent='Europe/London (Loudwater)';
+}
+
+updateClock();
+setInterval(updateClock,1000);
+
+function formatTimeAgo(date){
+  const now=new Date();
+  const diffMs = now - date;
+  const diffMin = Math.floor(diffMs/60000);
+  const diffHr = Math.floor(diffMin/60);
+  if(diffMin < 1) return "just now";
+  if(diffMin === 1) return "1 minute ago";
+  if(diffMin < 60) return `${diffMin} minutes ago`;
+  if(diffHr === 1) return "1 hour ago";
+  return `${diffHr} hours ago`;
+}
+
+async function updateTemperatures(){
+  try {
+    const resC = await fetch(`https://api.thingspeak.com/channels/3039615/fields/1.json?results=1`);
+    const dataC = await resC.json();
+    const latestC = parseFloat(dataC.feeds[0].field1).toFixed(1);
+    const createdAtC = new Date(dataC.feeds[0].created_at);
+    document.getElementById("temperatureC").textContent = `${latestC} °C`;
+    document.getElementById("lastUpdatedC").textContent = `Updated ${formatTimeAgo(createdAtC)}`;
+
+    const resF = await fetch(`https://api.thingspeak.com/channels/3039615/fields/2.json?results=1`);
+    const dataF = await resF.json();
+    const latestF = parseFloat(dataF.feeds[0].field2).toFixed(1);
+    const createdAtF = new Date(dataF.feeds[0].created_at);
+    document.getElementById("temperatureF").textContent = `${latestF} °F`;
+    document.getElementById("lastUpdatedF").textContent = `Updated ${formatTimeAgo(createdAtF)}`;
+
+    const resH = await fetch(`https://api.thingspeak.com/channels/3039615/fields/3.json?results=1`);
+    const dataH = await resH.json();
+    let latestH = parseFloat(dataH.feeds[0].field3);
+    if (isNaN(latestH)) latestH = 0;
+    const createdAtH = new Date(dataH.feeds[0].created_at);
+    document.getElementById("humidity").textContent = `${latestH} %`;
+    document.getElementById("lastUpdatedH").textContent = `Updated ${formatTimeAgo(createdAtH)}`;
+  } catch(err){
+    console.error(err);
+    document.getElementById("temperatureC").textContent="-- °C";
+    document.getElementById("temperatureF").textContent="-- °F";
+    document.getElementById("humidity").textContent="-- %";
+    document.getElementById("lastUpdatedC").textContent = "--";
+    document.getElementById("lastUpdatedF").textContent = "--";
+    document.getElementById("lastUpdatedH").textContent = "--";
+  }
+}
+
+updateTemperatures();
+setInterval(updateTemperatures,15000);
+</script>
+</body>
+</html>
