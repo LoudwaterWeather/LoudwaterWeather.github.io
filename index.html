@@ -112,11 +112,12 @@
 
   /* Nav adjustments */
   nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    padding: 0.5rem;
-  }
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 0.5rem;
+  justify-items: center;
+}
   nav a {
     font-size: 1rem;
   }
@@ -445,8 +446,7 @@ let forecastData = [];
 
 async function fetchForecastData() {
   try {
-    document.getElementById("forecastText").textContent = "Loading...";
-
+    
     const res = await fetch(
       'https://api.thingspeak.com/channels/3039615/feeds.json?results=30'
     );
@@ -472,6 +472,24 @@ async function fetchForecastData() {
 }
 function renderForecast() {
   if(!forecastData.length) return;
+
+const newestReading = new Date(forecastData[forecastData.length - 1].created_at);
+const diffSeconds = (new Date() - newestReading) / 1000;
+
+if (diffSeconds > 60) {
+  document.getElementById("forecastEmoji").textContent = "🔴";
+  document.getElementById("forecastText").textContent = "Weather Station OFF";
+  document.getElementById("forecastDesc").textContent =
+    "Forecast unavailable while station is offline";
+
+  document.getElementById("tempTrend").textContent = "--";
+  document.getElementById("humidityTrend").textContent = "--";
+
+  document.getElementById("forecastUpdated").textContent =
+    `Last reading ${formatTimeAgo(newestReading)}`;
+
+  return;
+}
 
   const temps = forecastData
     .map(f => parseFloat(f.field1))
