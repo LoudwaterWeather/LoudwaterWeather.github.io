@@ -200,9 +200,9 @@
 <body>
 <nav>
   <a href="#" onclick="showPage('home')">Home</a>
-  <a href="#" onclick="showPage('weather')">Weather</a>
-  <a href="#" onclick="showPage('questions')">Questions</a>
-  <a href="#" onclick="showPage('hardware')">Hardware</a>
+  <a href="#" onclick="showPage('weather')">Live Weather</a>
+  <a href="#" onclick="showPage('forecast')">Weather Forecast</a>
+  
 </nav>
 
 <!-- Home Page -->
@@ -220,19 +220,7 @@
 <div class="box">
     Loudwater is a small village just outside High Wycombe in Buckinghamshire. The pin is on the local Loudwater Premier Inn. Loudwater has the lovely River Wye chalkstream located in it and is mostly known for papermills which used to operate along that river.
   </div>
-  <div class="box title-box spaced">Operating Hours</div>
-  <div class="hours-box">
-    <ul>
-      <li>Monday - 07:30 --- 21:00</li>
-      <li>Tuesday - 07:30 --- 21:00</li>
-      <li>Wednesday - 07:30 --- 21:00</li>
-      <li>Thursday - 07:30 --- 21:00</li>
-      <li>Friday - 07:30 --- 21:00</li>
-      <li>Saturday - 07:30 --- 21:00</li>
-      <li>Sunday - Off</li>
-    </ul>
   </div>
-</div>
 <!-- Weather Page -->
 <div id="weather" class="page">
   <div class="header">Weather</div>
@@ -277,32 +265,41 @@
   </div>
 </div>
 
-<!-- Questions Page -->
-<div id="questions" class="page">
-  <div class="header">Questions Form</div>
-  <div class="box questions-box">
-    Please fill in this form if you have any questions about Loudwater Weather.
-  </div>
-  <div class="box questions-box">
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSetHHAyKsuwd4yDAn-Nl09UHog9usPD-SchLTci-hewjPGS1A/viewform" style="color:#22d3ee; text-decoration:underline;">Questions Form</a>
-  </div>
-</div>
+<div id="forecast" class="page">
+  <div class="header">Weather Forecast (Experimental)</div>
 
-<!-- Hardware Page -->
-<div id="hardware" class="page">
-  <div class="header">Hardware</div>
-  <div class="box">The weather station uses a Raspberry Pi Pico 2 WH and an AM2320 to get temperature and humidity. It also has 2 4.7K resistors and a few jumper wires as well as 2 breadboards. Here's some pictures of the main parts of the weather station.</div>
-  <div class="box">
-    <img src="https://i.postimg.cc/Zn3JL7Zz/IMG-2965.jpg" alt="Raspberry Pi Pico 2 WH" style="max-width:100%; border-radius:1rem;">
-    <div style="margin-top:0.5rem; font-weight:bold;">Raspberry Pi Pico 2 WH</div>
+  <div class="box questions-box">
+    This uses the previous 10 minutes of station data from ThingSpeak to estimate weather conditions for the next hour.
   </div>
-  <div class="box">
-    <img src="https://i.postimg.cc/MGKRrRvp/IMG-2969.jpg" alt="AM2320 Sensor" style="max-width:100%; border-radius:1rem;">
-    <div style="margin-top:0.5rem; font-weight:bold;">AM2320 Sensor</div>
+
+  <!-- Main Prediction Card -->
+  <div class="time-card" style="height:320px;">
+    <div class="emoji" id="forecastEmoji">⏳</div>
+    <div class="time" id="forecastText">Loading forecast...</div>
+    <div class="label" id="forecastDesc">Analysing recent weather trends</div>
+    <div class="chip">Next ~60 minutes</div>
+    <div class="last-updated" id="forecastUpdated">--</div>
   </div>
-  <div class="box">
-    <img src="https://i.postimg.cc/rpbgLQ6S/IMG-2980.jpg" alt="Finished Circuit" style="max-width:100%; border-radius:1rem;">
-    <div style="margin-top:0.5rem; font-weight:bold;">Finished Circuit</div>
+
+  <!-- Trend Cards -->
+  <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin:1rem auto;">
+    
+    <div class="wrap">
+      <main class="card">
+        <h2>Temperature Trend</h2>
+        <div class="temperature" id="tempTrend">--</div>
+        <div class="note">Last 10 minutes</div>
+      </main>
+    </div>
+
+    <div class="wrap">
+      <main class="card">
+        <h2>Humidity Trend</h2>
+        <div class="value" id="humidityTrend">--</div>
+        <div class="note">Last 10 minutes</div>
+      </main>
+    </div>
+
   </div>
 </div>
 
@@ -315,6 +312,10 @@
 function showPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
+
+  if(pageId === 'forecast') {
+    renderForecast();
+  }
 }
 
 async function updateStatus() {
@@ -324,6 +325,7 @@ async function updateStatus() {
     const lastUpdate = new Date(data.feeds[0].created_at);
     const diffSeconds = (new Date() - lastUpdate)/1000;
     const statusEl = document.getElementById('status');
+
     if (diffSeconds < 60) {
       statusEl.textContent = 'Weather station is: ON';
       statusEl.className = 'status-on';
@@ -352,11 +354,22 @@ function getPartOfDay(d) {
 }
 
 function formatTime(d){
-  return d.toLocaleTimeString("en-GB",{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:LOUDWATER_TZ});
+  return d.toLocaleTimeString("en-GB",{
+    hour:'2-digit',
+    minute:'2-digit',
+    second:'2-digit',
+    timeZone:LOUDWATER_TZ
+  });
 }
 
 function formatDate(d){
-  return d.toLocaleDateString("en-GB",{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:LOUDWATER_TZ});
+  return d.toLocaleDateString("en-GB",{
+    weekday:'long',
+    year:'numeric',
+    month:'long',
+    day:'numeric',
+    timeZone:LOUDWATER_TZ
+  });
 }
 
 function getDateInLoudwater(){
@@ -366,6 +379,7 @@ function getDateInLoudwater(){
 function updateClock(){
   const now=getDateInLoudwater();
   const {name,emoji}=getPartOfDay(now);
+
   document.getElementById('clock').textContent=formatTime(now);
   document.getElementById('date').textContent=formatDate(now);
   document.getElementById('label').textContent=`It is currently ${name} in Loudwater.`;
@@ -381,6 +395,7 @@ function formatTimeAgo(date){
   const diffMs = now - date;
   const diffMin = Math.floor(diffMs/60000);
   const diffHr = Math.floor(diffMin/60);
+
   if(diffMin < 1) return "just now";
   if(diffMin === 1) return "1 minute ago";
   if(diffMin < 60) return `${diffMin} minutes ago`;
@@ -394,6 +409,7 @@ async function updateTemperatures(){
     const dataC = await resC.json();
     const latestC = parseFloat(dataC.feeds[0].field1).toFixed(1);
     const createdAtC = new Date(dataC.feeds[0].created_at);
+
     document.getElementById("temperatureC").textContent = `${latestC} °C`;
     document.getElementById("lastUpdatedC").textContent = `Updated ${formatTimeAgo(createdAtC)}`;
 
@@ -401,29 +417,175 @@ async function updateTemperatures(){
     const dataF = await resF.json();
     const latestF = parseFloat(dataF.feeds[0].field2).toFixed(1);
     const createdAtF = new Date(dataF.feeds[0].created_at);
+
     document.getElementById("temperatureF").textContent = `${latestF} °F`;
     document.getElementById("lastUpdatedF").textContent = `Updated ${formatTimeAgo(createdAtF)}`;
 
     const resH = await fetch(`https://api.thingspeak.com/channels/3039615/fields/3.json?results=1`);
     const dataH = await resH.json();
     let latestH = parseFloat(dataH.feeds[0].field3);
+
     if (isNaN(latestH)) latestH = 0;
+
     const createdAtH = new Date(dataH.feeds[0].created_at);
+
     document.getElementById("humidity").textContent = `${latestH} %`;
     document.getElementById("lastUpdatedH").textContent = `Updated ${formatTimeAgo(createdAtH)}`;
+
   } catch(err){
     console.error(err);
-    document.getElementById("temperatureC").textContent="-- °C";
-    document.getElementById("temperatureF").textContent="-- °F";
-    document.getElementById("humidity").textContent="-- %";
-    document.getElementById("lastUpdatedC").textContent = "--";
-    document.getElementById("lastUpdatedF").textContent = "--";
-    document.getElementById("lastUpdatedH").textContent = "--";
   }
 }
 
 updateTemperatures();
 setInterval(updateTemperatures,15000);
-</script>
-</body>
+
+/* FORECAST SYSTEM */
+let forecastData = [];
+
+async function fetchForecastData() {
+  try {
+    document.getElementById("forecastText").textContent = "Loading...";
+
+    const res = await fetch(
+      'https://api.thingspeak.com/channels/3039615/feeds.json?results=30'
+    );
+
+    const data = await res.json();
+
+    if (data && data.feeds && data.feeds.length > 0) {
+      forecastData = data.feeds;
+      renderForecast();
+    } else {
+      document.getElementById("forecastText").textContent = "No Data";
+      document.getElementById("forecastDesc").textContent =
+        "ThingSpeak returned no recent readings";
+    }
+
+  } catch(err){
+    console.error("Forecast fetch failed:", err);
+
+    document.getElementById("forecastText").textContent = "Fetch Error";
+    document.getElementById("forecastDesc").textContent =
+      "Could not load forecast data";
+  }
+}
+function renderForecast() {
+  if(!forecastData.length) return;
+
+  const temps = forecastData
+    .map(f => parseFloat(f.field1))
+    .filter(v => !isNaN(v));
+
+  const hums = forecastData
+    .map(f => parseFloat(f.field3))
+    .filter(v => !isNaN(v));
+
+  if(temps.length < 5 || hums.length < 5) return;
+
+  const tempTrend = temps[temps.length-1] - temps[0];
+  const humTrend = hums[hums.length-1] - hums[0];
+
+  const tempState =
+    tempTrend > 0.5 ? "rising" :
+    tempTrend < -0.5 ? "falling" :
+    "steady";
+
+  const humState =
+    humTrend > 2 ? "rising" :
+    humTrend < -2 ? "falling" :
+    "steady";
+
+  let prediction = "";
+  let emoji = "";
+  let desc = "";
+
+  /* ALL COMBINATIONS */
+
+  if(tempState === "rising" && humState === "falling"){
+    prediction = "Sunny / Clearing";
+    emoji = "☀️";
+    desc = "Warmer and drier air moving in";
+  }
+
+  else if(tempState === "rising" && humState === "rising"){
+    prediction = "Warm & Becoming Cloudier";
+    emoji = "🌤️";
+    desc = "Warmer air with increasing moisture";
+  }
+
+  else if(tempState === "rising" && humState === "steady"){
+    prediction = "Warming Up";
+    emoji = "🌞";
+    desc = "Temperature increasing";
+  }
+
+  else if(tempState === "falling" && humState === "rising"){
+    prediction = "Rain / Clouds Approaching";
+    emoji = "🌧️";
+    desc = "Cooling with increasing humidity";
+  }
+
+  else if(tempState === "falling" && humState === "falling"){
+    prediction = "Cooler & Clearing";
+    emoji = "🌥️";
+    desc = "Cool dry air moving in";
+  }
+
+  else if(tempState === "falling" && humState === "steady"){
+    prediction = "Becoming Cooler";
+    emoji = "🌬️";
+    desc = "Temperature dropping";
+  }
+
+  else if(tempState === "steady" && humState === "rising"){
+    prediction = "Getting Cloudier";
+    emoji = "☁️";
+    desc = "Moisture increasing";
+  }
+
+  else if(tempState === "steady" && humState === "falling"){
+    prediction = "Bright / Dry Conditions";
+    emoji = "🌤️";
+    desc = "Humidity dropping";
+  }
+
+  else {
+    prediction = "Partly Cloudy";
+    emoji = "⛅";
+    desc = "No major weather change";
+  }
+
+  /* Trend text */
+
+  let tempText =
+    tempState === "rising"
+      ? `Temp Increased (+${tempTrend.toFixed(1)}°C)`
+      : tempState === "falling"
+      ? `Temp Decreased (${tempTrend.toFixed(1)}°C)`
+      : `Temp Stayed Same (+0.0°C)`;
+
+  let humText =
+    humState === "rising"
+      ? `Humidity Increased (+${humTrend.toFixed(1)}%)`
+      : humState === "falling"
+      ? `Humidity Decreased (${humTrend.toFixed(1)}%)`
+      : `Humidity Stayed Same (+0.0%)`;
+
+  document.getElementById("forecastEmoji").textContent = emoji;
+  document.getElementById("forecastText").textContent = prediction;
+  document.getElementById("forecastDesc").textContent = desc;
+
+  document.getElementById("tempTrend").textContent = tempText;
+  document.getElementById("humidityTrend").textContent = humText;
+
+  document.getElementById("forecastUpdated").textContent =
+  `Updated ${new Date().toLocaleTimeString("en-GB")}`;
+}
+
+fetchForecastData();
+setInterval(fetchForecastData, 20000);
+window.addEventListener('load', fetchForecastData);
+
+</script></body>
 </html>
