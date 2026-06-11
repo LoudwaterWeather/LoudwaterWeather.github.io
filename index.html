@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-<link rel="icon" type="image/x-icon" href="/images/fav.ico">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 <style>
 
 /* Both blues to use: 1. #1b2333 Darker 2. #1c4587 Lighter.*/
@@ -199,23 +199,82 @@ async function updateDate() {
     const minutesUTC = date1.getUTCMinutes();
     const secondsUTC = date1.getUTCSeconds();
     
-
     let greeting;
 
-    if(hours >= 12 && hours <= 17) {
+    if(hours === 12) {
     greeting = "It is currently afternoon in Loudwater. 🌤️";
     } 
-    else if(hours >= 18 && hours <= 20) {
+    else if(hours === 13) {
+    greeting = "It is currently afternoon in Loudwater. 🌤️";
+    } 
+    else if(hours === 14) {
+    greeting = "It is currently afternoon in Loudwater. 🌤️";
+    } 
+    else if(hours === 15) {
+    greeting = "It is currently afternoon in Loudwater. 🌤️";
+    } 
+    else if(hours === 16) {
+    greeting = "It is currently afternoon in Loudwater. 🌤️";
+    } 
+    else if(hours === 17) {
+    greeting = "It is currently afternoon in Loudwater. 🌤️";
+    } 
+    else if(hours === 18) {
     greeting = "It is currently evening in Loudwater. 🌆";
     }
-    else if(hours >= 21 && hours <= 3) {
+    else if(hours === 19) {
+    greeting = "It is currently evening in Loudwater. 🌆";
+    }
+    else if(hours === 20) {
+    greeting = "It is currently evening in Loudwater. 🌆";
+    }
+    else if(hours === 21) {
     greeting = "It is currently night in Loudwater. 🌙";
     }
-    else if(hours >= 4 && hours <= 11) {
+    else if(hours === 22) {
+    greeting = "It is currently night in Loudwater. 🌙";
+    }
+    else if(hours === 23) {
+    greeting = "It is currently night in Loudwater. 🌙";
+    }
+    else if(hours === 24) {
+    greeting = "It is currently night in Loudwater. 🌙";
+    }
+    else if(hours === 1) {
+    greeting = "It is currently night in Loudwater. 🌙";
+    }
+    else if(hours === 2) {
+    greeting = "It is currently night in Loudwater. 🌙";
+    }
+    else if(hours === 3) {
+    greeting = "It is currently night in Loudwater. 🌙";
+    }
+    else if(hours === 4) {
     greeting = "It is currently morning in Loudwater. ☀️";
     }
+    else if(hours === 5) {
+    greeting = "It is currently morning in Loudwater. ☀️";
+    }
+    else if(hours === 6) {
+    greeting = "It is currently morning in Loudwater. ☀️";
+    }
+    else if(hours === 7) {
+    greeting = "It is currently morning in Loudwater. ☀️";
+    }
+    else if(hours === 8) {
+    greeting = "It is currently morning in Loudwater. ☀️";
+    }
+    else if(hours === 9) {
+    greeting = "It is currently morning in Loudwater. ☀️";
+    }
+    else if(hours === 10) {
+    greeting = "It is currently morning in Loudwater. ☀️";
+    }
+    else if(hours === 4) {
+    greeting = "It is currently morning in Loudwater. ☀️";
+    }11
 
-    document.getElementById("currentgreeting").innerHTML = (greeting);
+    document.getElementById("currentgreeting").innerHTML = greeting;
     console.log(greeting);
     // i am very hungry
 
@@ -237,7 +296,7 @@ async function updateDate() {
     let currenttimeh3value = `${hours}:${minutes}:${seconds}`;
 
     document.getElementById("currentdateh3").innerHTML = (date1.toDateString());
-    document.getElementById("currenttimeh3").innerHTML = (date1.toTimeString().substr(0,8));
+    document.getElementById("currenttimeh3").innerHTML = (date1.toTimeString().substr(0,8) + " " + timezone);
 
     getData5("https://api.thingspeak.com/channels/3039615/fields/1.json?results=1");
 
