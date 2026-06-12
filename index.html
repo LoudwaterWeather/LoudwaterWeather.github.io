@@ -58,15 +58,13 @@ p {
   justify-content: center;
 }
 
-.map {
-  border: 10px solid #1c4587;
-  -moz-border-radius: 25px;
-  border-radius: 25px;
-}
-
 .pointer {
   cursor: pointer;
   }
+
+iframe {
+  border:0; margin-left: 60px; border-radius: 17px;
+}
 
 @media screen and (max-width: 500px) {
   
@@ -116,10 +114,8 @@ p {
   justify-content: center;
 }
 
-.map {
-  border: 10px solid #1c4587;
-  -moz-border-radius: 25px;
-  border-radius: 25px;
+iframe {
+  border:0; margin-left: 20px; border-radius: 17px;
 }
    
 }
@@ -131,7 +127,7 @@ p {
 <title>Loudwater Weather</title>
 
 <div id="home">
-<h1 class="main-title">Loudwater Weather MT9</h1>
+<h1 class="main-title">Loudwater Weather MT10</h1>
 
 <!--<h1 class ="important-notice" style="color:#EDAE00;">IMPORTANT</h1>
 <p style="color:#EDAE00;"><b>The weather station is currently undergoing essential hardware or software maintenance so it will not be on for the time being! Thank you for understanding.</b></p>
@@ -152,7 +148,15 @@ The weather station uses a Raspberry Pi Pico 2 WH and an AM2320 sensor to measur
 
 <h2>Where is Loudwater?</h2>
 
-<iframe class="map" src="https://www.google.com/maps/embed?pb=!1m13!1m8!1m3!1d9911.042172303598!2d-0.694453!3d51.609276!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNTHCsDM2JzI4LjEiTiAwwrA0MSczOS4wIlc!5e0!3m2!1sen!2suk!4v1755671930777!5m2!1sen!2suk" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+<iframe 
+  src="https://www.google.com/maps/embed?pb=!1m13!1m8!1m3!1d9911.042172303598!2d-0.694453!3d51.609276!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNTHCsDM2JzI4LjEiTiAwwrA0MSczOS4wIlc!5e0!3m2!1sen!2suk!4v1755671930777!5m2!1sen!2suk" 
+  width="350" 
+  height="175" 
+  allowfullscreen="" 
+  loading="lazy" 
+  referrerpolicy="no-referrer-when-downgrade">
+</iframe>
 
 <p>Loudwater is a small village just outside High Wycombe in Buckinghamshire. The map pin is placed on the local Premier Inn. Passing through Loudwater is the River Wye chalkstream which is the 5th longest river in the UK and stretches 134 miles. Because it is a chalkstream, it serves as a lovely habitat for wildlife and there are less than 300 left in the whole world.</p>
 </div>
