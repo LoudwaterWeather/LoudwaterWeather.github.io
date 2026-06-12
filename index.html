@@ -65,13 +65,23 @@ p {
 .pointer {
   cursor: pointer;
   }
+
+@media screen and (max-width: 500px) {
+  
+div.home {
+  max-width: 480px;
+}
+   
+}
+
+
 </style>
 
 <body>
 <title>Loudwater Weather</title>
 
 <div id="home">
-<h1 class="main-title">Loudwater Weather</h1>
+<h1 class="main-title">Loudwater Weather MT1</h1>
 
 <!--<h1 class ="important-notice" style="color:#EDAE00;">IMPORTANT</h1>
 <p style="color:#EDAE00;"><b>The weather station is currently undergoing essential hardware or software maintenance so it will not be on for the time being! Thank you for understanding.</b></p>
@@ -270,9 +280,9 @@ async function updateDate() {
     else if(hours === 10) {
     greeting = "It is currently morning in Loudwater. ☀️";
     }
-    else if(hours === 11) {
+    else if(hours === 4) {
     greeting = "It is currently morning in Loudwater. ☀️";
-    }
+    }11
 
     document.getElementById("currentgreeting").innerHTML = greeting;
     console.log(greeting);
@@ -309,7 +319,7 @@ async function updateDate() {
     let diff = UTCTime1 - lastStatus1;
     let statusOnOff;
 
-    if (diff < 75 && diff >-5) {
+    if (diff < 75 && diff > -5) {
       statusOnOff = "Weather station is on. ✅";
     } else {
       statusOnOff = "Weather station is off. 🛑";
