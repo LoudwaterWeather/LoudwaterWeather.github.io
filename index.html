@@ -309,7 +309,7 @@ async function updateDate() {
     let diff = UTCTime1 - lastStatus1;
     let statusOnOff;
 
-    if (diff < 75) {
+    if (diff < 75 && diff >-5) {
       statusOnOff = "Weather station is on. ✅";
     } else {
       statusOnOff = "Weather station is off. 🛑";
