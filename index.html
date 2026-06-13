@@ -537,6 +537,11 @@ async function getData1(file) {
 //Use if statements
 
   //document.getElementById("prediction").innerHTML = humidTrend + tempTrend;
+  //one is started
+  if (tempTrend === 0.0 && humidTrend === 0.0) {
+    document.getElementById("prediction").innerHTML = "Current conditions expected to continue."
+  }
+
 }
 }
 
