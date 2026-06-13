@@ -538,8 +538,10 @@ async function getData1(file) {
 
   //document.getElementById("prediction").innerHTML = humidTrend + tempTrend;
   //one is started
-  if (tempTrend === 0.0 && humidTrend === 0.0) {
-    document.getElementById("prediction").innerHTML = "Current conditions expected to continue."
+  if (tempTrend === 0.0 || tempTrend === -0.1 || tempTrend === + 0.1 && humidTrend === 0.0 || humidTrend === -0.0 || humidTrend === +0.0) {
+    document.getElementById("prediction").innerHTML = "Current conditions expected to continue.";
+  } else {
+    document.getElementById("prediction").innerHTML = "else";
   }
 
 }
