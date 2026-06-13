@@ -187,7 +187,13 @@ The weather station uses a Raspberry Pi Pico 2 WH and an AM2320 sensor to measur
 </div>
 <div id="weatherForecast">
 <h2>Weather Forecast (Experimental & Not Yet Built)</h2>
-<p>When completed, this uses the previous 10 minutes of weather station data to give an estimate of the weather for roughly the next hour.</p>
+<p>When completed, this uses the previous 10 minutes of weather station data to give an estimate of the weather for roughly the next hour. It cannot give a forecast when the weather station is off.</p>
+
+<h4 id="prediction">Prediction: </h4>
+
+<p id="tempCTrend">Temperature Trend: +-0.0</p>
+<p id="humidityTrend">Humidity Trend: +-0.0</p>
+
 </div>
 <!-- ADD FOOTER CODE HERE-->
 
@@ -362,7 +368,7 @@ async function updateDate() {
     document.getElementById("currentdateh3").innerHTML = (date1.toDateString());
     document.getElementById("currenttimeh3").innerHTML = (date1.toTimeString().substr(0,8) + " " + timezone);
 
-    getData5("https://api.thingspeak.com/channels/3039615/fields/1.json?results=1");
+  getData5("https://api.thingspeak.com/channels/3039615/fields/1.json?results=1");
 
   async function getData5(file) {
     let myObject5 = await fetch(file);
@@ -389,6 +395,155 @@ async function updateDate() {
 }
 
 updateDate();
+
+//Weather Forecast Systems
+
+//Trend Parts
+
+async function updateForecast(){
+
+getData1("https://api.thingspeak.com/channels/3039615/fields/1.json?results=10");
+
+async function getData1(file) {
+  let myObject1 = await fetch(file);
+  let data1 = await myObject1.json();
+  let tempCValue1 = data1.feeds[0].field1;
+  let tempCValue2 = data1.feeds[1].field1;
+  let tempCValue3 = data1.feeds[2].field1;
+  let tempCValue4 = data1.feeds[3].field1;
+  let tempCValue5 = data1.feeds[4].field1;
+  let tempCValue6 = data1.feeds[5].field1;
+  let tempCValue7 = data1.feeds[6].field1;
+  let tempCValue8 = data1.feeds[7].field1;
+  let tempCValue9 = data1.feeds[8].field1;
+  let tempCValue10 = data1.feeds[9].field1;
+  let subtractedValue1 = tempCValue1 - tempCValue2;
+  let subtractedValue2 = tempCValue1 - tempCValue3;
+  let subtractedValue3 = tempCValue1 - tempCValue4;
+  let subtractedValue4 = tempCValue1 - tempCValue5;
+  let subtractedValue5 = tempCValue1 - tempCValue6;
+  let subtractedValue6 = tempCValue1 - tempCValue7;
+  let subtractedValue7 = tempCValue1 - tempCValue8;
+  let subtractedValue8 = tempCValue1 - tempCValue9;
+  let subtractedValue9 = tempCValue1 - tempCValue10;
+  let addedSubtractedValuesC = subtractedValue1 + subtractedValue2 + subtractedValue3 + subtractedValue4 + subtractedValue5 + subtractedValue6 + subtractedValue7 + subtractedValue8 + subtractedValue9;
+  let averageC = addedSubtractedValuesC / 9;
+  let averageCRounded = averageC.toFixed(1);
+  document.getElementById("tempCTrend").innerHTML = "Temperature Trend : " + (averageCRounded);
+  const tempTrend = averageCRounded;
+}
+
+getData7("https://api.thingspeak.com/channels/3039615/fields/3.json?results=10");
+
+async function getData7(file) {
+  let myObject7 = await fetch(file);
+  let data7 = await myObject7.json();
+  let humidValue1 = data7.feeds[0].field3;
+  let humidValue2 = data7.feeds[1].field3;
+  let humidValue3 = data7.feeds[2].field3;
+  let humidValue4 = data7.feeds[3].field3;
+  let humidValue5 = data7.feeds[4].field3;
+  let humidValue6 = data7.feeds[5].field3;
+  let humidValue7 = data7.feeds[6].field3;
+  let humidValue8 = data7.feeds[7].field3;
+  let humidValue9 = data7.feeds[8].field3;
+  let humidValue10 = data7.feeds[9].field3;
+  let subtractedHValue1 = humidValue1 - humidValue2;
+  let subtractedHValue2 = humidValue1 - humidValue3;
+  let subtractedHValue3 = humidValue1 - humidValue4;
+  let subtractedHValue4 = humidValue1 - humidValue5;
+  let subtractedHValue5 = humidValue1 - humidValue6;
+  let subtractedHValue6 = humidValue1 - humidValue7;
+  let subtractedHValue7 = humidValue1 - humidValue8;
+  let subtractedHValue8 = humidValue1 - humidValue9;
+  let subtractedHValue9 = humidValue1 - humidValue10;
+  let addedSubtractedValuesHumid = subtractedHValue1 + subtractedHValue2 + subtractedHValue3 + subtractedHValue4 + subtractedHValue5 + subtractedHValue6 + subtractedHValue7 + subtractedHValue8 + subtractedHValue9;
+  let averageHumid = addedSubtractedValuesHumid / 9;
+  let averageHumidRounded = averageHumid.toFixed(1);
+  document.getElementById("humidityTrend").innerHTML = "Humidity Trend : " + (averageHumidRounded);
+  humidTrend = averageHumidRounded;
+}
+
+  setTimeout(updateForecast, 5000);
+  
+}
+
+updateForecast();
+
+async function prediction() {
+
+
+getData7("https://api.thingspeak.com/channels/3039615/fields/3.json?results=10");
+
+async function getData7(file) {
+  let myObject7 = await fetch(file);
+  let data7 = await myObject7.json();
+  let humidValue1 = data7.feeds[0].field3;
+  let humidValue2 = data7.feeds[1].field3;
+  let humidValue3 = data7.feeds[2].field3;
+  let humidValue4 = data7.feeds[3].field3;
+  let humidValue5 = data7.feeds[4].field3;
+  let humidValue6 = data7.feeds[5].field3;
+  let humidValue7 = data7.feeds[6].field3;
+  let humidValue8 = data7.feeds[7].field3;
+  let humidValue9 = data7.feeds[8].field3;
+  let humidValue10 = data7.feeds[9].field3;
+  let subtractedHValue1 = humidValue1 - humidValue2;
+  let subtractedHValue2 = humidValue1 - humidValue3;
+  let subtractedHValue3 = humidValue1 - humidValue4;
+  let subtractedHValue4 = humidValue1 - humidValue5;
+  let subtractedHValue5 = humidValue1 - humidValue6;
+  let subtractedHValue6 = humidValue1 - humidValue7;
+  let subtractedHValue7 = humidValue1 - humidValue8;
+  let subtractedHValue8 = humidValue1 - humidValue9;
+  let subtractedHValue9 = humidValue1 - humidValue10;
+  let addedSubtractedValuesHumid = subtractedHValue1 + subtractedHValue2 + subtractedHValue3 + subtractedHValue4 + subtractedHValue5 + subtractedHValue6 + subtractedHValue7 + subtractedHValue8 + subtractedHValue9;
+  let averageHumid = addedSubtractedValuesHumid / 9;
+  let averageHumidRounded = averageHumid.toFixed(1);
+  document.getElementById("humidityTrend").innerHTML = "Humidity Trend : " + (averageHumidRounded);
+  humidTrend = averageHumidRounded;
+
+  getData1("https://api.thingspeak.com/channels/3039615/fields/1.json?results=10");
+
+async function getData1(file) {
+  let myObject1 = await fetch(file);
+  let data1 = await myObject1.json();
+  let tempCValue1 = data1.feeds[0].field1;
+  let tempCValue2 = data1.feeds[1].field1;
+  let tempCValue3 = data1.feeds[2].field1;
+  let tempCValue4 = data1.feeds[3].field1;
+  let tempCValue5 = data1.feeds[4].field1;
+  let tempCValue6 = data1.feeds[5].field1;
+  let tempCValue7 = data1.feeds[6].field1;
+  let tempCValue8 = data1.feeds[7].field1;
+  let tempCValue9 = data1.feeds[8].field1;
+  let tempCValue10 = data1.feeds[9].field1;
+  let subtractedValue1 = tempCValue1 - tempCValue2;
+  let subtractedValue2 = tempCValue1 - tempCValue3;
+  let subtractedValue3 = tempCValue1 - tempCValue4;
+  let subtractedValue4 = tempCValue1 - tempCValue5;
+  let subtractedValue5 = tempCValue1 - tempCValue6;
+  let subtractedValue6 = tempCValue1 - tempCValue7;
+  let subtractedValue7 = tempCValue1 - tempCValue8;
+  let subtractedValue8 = tempCValue1 - tempCValue9;
+  let subtractedValue9 = tempCValue1 - tempCValue10;
+  let addedSubtractedValuesC = subtractedValue1 + subtractedValue2 + subtractedValue3 + subtractedValue4 + subtractedValue5 + subtractedValue6 + subtractedValue7 + subtractedValue8 + subtractedValue9;
+  let averageC = addedSubtractedValuesC / 9;
+  let averageCRounded = averageC.toFixed(1);
+  document.getElementById("tempCTrend").innerHTML = "Temperature Trend : " + (averageCRounded);
+  const tempTrend = averageCRounded;
+
+// Add actual prediction stuff here as its in a good working spot and updates every 5 secodns like wanted,
+//Use if statements
+
+  //document.getElementById("prediction").innerHTML = humidTrend + tempTrend;
+}
+}
+
+    setTimeout(prediction, 5000);
+}
+
+prediction();
 
 </script>
 </body>
