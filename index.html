@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-<link rel="icon" type="image/x-icon" href="/images/fav.ico">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 
@@ -340,9 +340,9 @@ async function updateDate() {
     else if(hours === 10) {
     greeting = "It is currently morning in Loudwater. ☀️";
     }
-    else if(hours === 4) {
+    else if(hours === 11) {
     greeting = "It is currently morning in Loudwater. ☀️";
-    }11
+    }
 
     document.getElementById("currentgreeting").innerHTML = greeting;
     console.log(greeting);
@@ -461,18 +461,14 @@ async function getData7(file) {
   let averageHumid = addedSubtractedValuesHumid / 9;
   let averageHumidRounded = averageHumid.toFixed(1);
   document.getElementById("humidityTrend").innerHTML = "Humidity Trend : " + (averageHumidRounded);
-  const humidTrend = averageHumidRounded;
-  return humidTrend;
+  humidTrend = averageHumidRounded;
 }
 
+async function prediction() {
+  document.getElementById("prediction").innerHTML = "Currently the prediction system is still in development so only the weather trends can be shown.";
+}
 
-  
- 
-
-
-
-  
-
+prediction();
 
   setTimeout(updateForecast, 5000);
   
