@@ -139,7 +139,7 @@ iframe {
 
 <p>Welcome to Loudwater Weather, the local weather station for Loudwater. This website is still in production and may change occasionally.</p>
 
-<p>Now you might be wondering why you should use Loudwater Weather. Well, Loudwater Weather is unique compared to other websites like the Met Office because it gives you the exact temperature and humidity (and maybe more in future!) at the time you look at it. Not many places do that! It is also completely free for anyone to use and no money is made from it.</p>
+<p>Now you might be wondering why you should use Loudwater Weather. Well, Loudwater Weather is unique compared to other websites like the Met Office because it gives you the exact temperature and humidity (and maybe more in future!) at the time you look at it. And it also gives a small forecast. Not many places do that! It is also completely free for anyone to use and no money is made from it.</p>
 
 <p><b>Thank you</b> for using Loudwater Weather and I hope you find it useful and will continue to use it in the future.</p>
 
@@ -158,12 +158,12 @@ iframe {
 </iframe>
 
 <p>Loudwater is a small village just outside High Wycombe in Buckinghamshire. The map pin is placed on the local Premier Inn. Passing through Loudwater is the River Wye chalkstream which is the 5th longest river in the UK and stretches 134 miles. Because it is a chalkstream, it serves as a lovely habitat for wildlife and there are less than 300 left in the whole world.</p>
-<p>Even though the weather station is based in Loudwater, it also covers the local surrounding areas including <b>Flackwell Heath, Hazlemere, Penn, Tylers Green, Micklefield, Beaconsfield, High Wycombe, Wooburn Green, Holmer Green and possibly parts of Marlow</b>. I believe it will be less accurate anywhere further than the listed locations. Because the station is based in Loudwater, it will be most accurate in Loudwater however the other listed locations should still have a high accuracy.</p>
+<p>Even though the station is based in Loudwater, it can also give accurate coverage for nearby areas.</p>
 
 </div>
 <div id="liveWeather">
 <h2>Live Weather</h2>
-<p>This page displays live weather data including temperature, humidity, and time. If the station is off, temperature and humidity values show the last known readings. When the station is on, the readings update roughly every 20 seconds. I've calculated a roughly 10 seconds delay between it being updated and it being displayed on the page. 
+<p>This section displays live weather data including temperature, humidity, and time. If the station is off, temperature and humidity values show the last known readings. When the station is on, the readings update roughly every 20 seconds. I've calculated a roughly 10 seconds delay between it being updated and it being displayed on the page. 
 </p>
 
 <h3 id="on/off">Weather station is off. 🛑</h3>
@@ -199,8 +199,7 @@ iframe {
 <!-- ADD FOOTER CODE HERE-->
 
 <div class="footer1">
-<h3>Loudwater Weather 2026
-</h3>
+<h3>Loudwater Weather 2026</h3>
 </div>
 <div class="footer2">
 <p>© Copyright 2026</p>
@@ -347,7 +346,6 @@ async function updateDate() {
 
     document.getElementById("currentgreeting").innerHTML = greeting;
     console.log(greeting);
-    // i am very hungry
 
     const d = new Date();
     let diff = d.getTimezoneOffset();
@@ -464,6 +462,8 @@ async function getData7(file) {
   document.getElementById("humidityTrend").innerHTML = "Humidity Trend : " + (averageHumidRounded);
   humidTrend = averageHumidRounded;
 }
+
+//Prediction Parts
 
 async function prediction() {
   document.getElementById("prediction").innerHTML = "Currently the prediction system is still in development so only the weather trends can be shown.";
