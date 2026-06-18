@@ -431,6 +431,13 @@ async function getData1(file) {
   let averageCRounded = averageC.toFixed(1);
   document.getElementById("tempCTrend").innerHTML = "Temperature Trend : " + (averageCRounded);
   const tempTrend = averageCRounded;
+  return new Promise((resolve) =>{
+    setTimeout(() => {
+      resolve(tempTrend);
+    }, 2000);
+  
+  });
+
 }
 
 getData7("https://api.thingspeak.com/channels/3039615/fields/3.json?results=10");
@@ -462,12 +469,27 @@ async function getData7(file) {
   let averageHumidRounded = averageHumid.toFixed(1);
   document.getElementById("humidityTrend").innerHTML = "Humidity Trend : " + (averageHumidRounded);
   humidTrend = averageHumidRounded;
+  return new Promise((resolve) =>{
+    setTimeout(() => {
+      resolve(humidTrend);
+    }, 2000);
+  
+  });
 }
 
 //Prediction Parts
 
 async function prediction() {
-  document.getElementById("prediction").innerHTML = "Currently the prediction system is still in development so only the weather trends can be shown.";
+
+  const humid = await getData7("https://api.thingspeak.com/channels/3039615/fields/3.json?results=10");
+  console.log(humid);
+
+  const tempc = await getData1("https://api.thingspeak.com/channels/3039615/fields/1.json?results=10");
+  console.log(tempc);
+
+  weatherString = `${tempc}, ${humid}`;
+
+  document.getElementById("prediction").innerHTML = weatherString;
 }
 
 prediction();
