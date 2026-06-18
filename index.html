@@ -136,7 +136,41 @@ iframe {
 
 <!--UNCOMMENT THE ABOVE FOR ANY ENGINEERING WORKS-->
 
-<h2>Home</h2>
+<div id="liveWeather">
+<h2>Live Weather</h2>
+<p>This section displays live weather data including temperature, humidity, and time. If the station is off, temperature and humidity values show the last known readings. When the station is on, the readings update roughly once per minute.  
+</p>
+
+<h3 id="on/off">Weather station is off. 🛑</h3>
+
+<h3 id="currentdateh3">00/00/0000</h3>
+
+<h3 id="currentgreeting">It is currently morning/afternoon/evening in Loudwater.</h3>
+
+<h3 id="tempc">0.0</h3>
+<h3 id="tempf">0.0</h3>
+<h3 id="humidity">0.0</h3>
+<h4 id="lastupdatedc">0.0</h4>
+
+<!-- ADD ALL THE WEATHER SYSTEMS HERE, when you learn how -->
+<!--Here a the 3 api links-->
+<!--TempC https://api.thingspeak.com/channels/3039615/fields/1.json?results=1 -->
+<!--TempF https://api.thingspeak.com/channels/3039615/fields/2.json?results=1-->
+<!--Humidity https://api.thingspeak.com/channels/3039615/fields/3.json?results=1-->
+
+</div>
+<div id="weatherForecast">
+<h2>Weather Forecast (Experimental & Not Yet Built)</h2>
+<p>When completed, this uses the previous 10 minutes of weather station data to give an estimate of the weather for roughly the next hour. It cannot give a forecast when the weather station is off.</p>
+
+<h3 id="prediction">Prediction: </h3>
+
+<h3 id="tempCTrend">Temperature Trend: +-0.0</h3>
+<h3 id="humidityTrend">Humidity Trend: +-0.0</h3>
+
+</div>
+
+<h2>About Loudwater Weather</h2>
 
 <p>Welcome to Loudwater Weather, the local weather station for Loudwater. This website is still in production and may change occasionally.</p>
 
@@ -162,41 +196,7 @@ iframe {
 <p>Even though the station is based in Loudwater, it can also give accurate coverage for nearby areas.</p>
 
 </div>
-<div id="liveWeather">
-<h2>Live Weather</h2>
-<p>This section displays live weather data including temperature, humidity, and time. If the station is off, temperature and humidity values show the last known readings. When the station is on, the readings update roughly every 20 seconds. I've calculated a roughly 10 seconds delay between it being updated and it being displayed on the page. 
-</p>
 
-<h3 id="on/off">Weather station is off. 🛑</h3>
-
-<h3 id="currentdateh3">00/00/0000</h3>
-
-<h3 id="currenttimeh3">00:00:00</h3>
-
-<h4 id="currentgreeting">It is currently morning/afternoon/evening in Loudwater.</h4>
-
-<p id="tempc">0.0</p>
-<p id="tempf">0.0</p>
-<p id="humidity">0.0</p>
-<p id="lastupdatedc">0.0</p>
-
-<!-- ADD ALL THE WEATHER SYSTEMS HERE, when you learn how -->
-<!--Here a the 3 api links-->
-<!--TempC https://api.thingspeak.com/channels/3039615/fields/1.json?results=1 -->
-<!--TempF https://api.thingspeak.com/channels/3039615/fields/2.json?results=1-->
-<!--Humidity https://api.thingspeak.com/channels/3039615/fields/3.json?results=1-->
-
-</div>
-<div id="weatherForecast">
-<h2>Weather Forecast (Experimental & Not Yet Built)</h2>
-<p>When completed, this uses the previous 10 minutes of weather station data to give an estimate of the weather for roughly the next hour. It cannot give a forecast when the weather station is off.</p>
-
-<h4 id="prediction">Prediction: </h4>
-
-<p id="tempCTrend">Temperature Trend: +-0.0</p>
-<p id="humidityTrend">Humidity Trend: +-0.0</p>
-
-</div>
 <!-- ADD FOOTER CODE HERE-->
 
 <div class="footer1">
@@ -217,6 +217,7 @@ async function getData1(file) {
   let data1 = await myObject1.json();
   let tempCValue = data1.feeds[0].field1;
   let tempCValueFinal = tempCValue - 1 + 1;
+
   document.getElementById("tempc").innerHTML = "Temperature: " + (tempCValueFinal) + "°C"; 
 }
 
@@ -361,12 +362,9 @@ async function updateDate() {
 
     console.log(timezone);
 
-    let currentdateh3value = `${day}/${month}/${year}`;
 
-    let currenttimeh3value = `${hours}:${minutes}:${seconds}`;
 
-    document.getElementById("currentdateh3").innerHTML = (date1.toDateString());
-    document.getElementById("currenttimeh3").innerHTML = (date1.toTimeString().substr(0,8) + " " + timezone);
+    document.getElementById("currentdateh3").innerHTML = (date1.toDateString() + " " +(date1.toTimeString().substr(0,8) + " " + timezone));
 
   getData5("https://api.thingspeak.com/channels/3039615/fields/1.json?results=1");
 
@@ -434,7 +432,7 @@ async function getData1(file) {
   return new Promise((resolve) =>{
     setTimeout(() => {
       resolve(tempTrend);
-    }, 2000);
+    }, 1);
   
   });
 
@@ -472,7 +470,7 @@ async function getData7(file) {
   return new Promise((resolve) =>{
     setTimeout(() => {
       resolve(humidTrend);
-    }, 2000);
+    }, 1);
   
   });
 }
@@ -489,7 +487,19 @@ async function prediction() {
 
   weatherString = `${tempc}, ${humid}`;
 
-  document.getElementById("prediction").innerHTML = weatherString;
+  //Now heres the if statements of prediction.
+
+  if (tempc > -1.9 || tempc < 1.9 && humid > -1.9 || humid < 1.9) {
+    document.getElementById("prediction").innerHTML = "Current conditions expected to continue.";
+  } else if (tempc > 2 && humid < -2) {
+    document.getElementById("prediction").innerHTML = "Drier and hotter conditions expected.";
+  } else if (tempc < -2 && humid > 2) {
+    document.getElementById("prediction").innerHTML = "Colder and wetter conditions expected.";
+  } else if (tempc < -2 && humid < -2) {
+    document.getElementById("prediction").innerHTML = "Clearer skies and slightly colder conditions expected.";
+  } else if (tempc > 2 && humid > 2) {
+    document.getElementById("prediction").innerHTML = "Thundery conditions expected.";
+  } 
 }
 
 prediction();
