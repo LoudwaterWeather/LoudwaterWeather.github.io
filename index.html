@@ -167,6 +167,7 @@ iframe {
 
 <h3 id="tempCTrend">Temperature Trend: +-0.0</h3>
 <h3 id="humidityTrend">Humidity Trend: +-0.0</h3>
+<h3 id="dewPoint">Predicted Dew  Point: 0</h3>
 
 </div>
 
@@ -500,6 +501,9 @@ async function prediction() {
   } else if (tempc > 2 && humid > 2) {
     document.getElementById("prediction").innerHTML = "Thundery conditions expected.";
   } 
+
+  //add dew point formula and display it too
+
 }
 
 prediction();
